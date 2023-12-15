@@ -1,36 +1,1785 @@
-name: hashicorp/null
+name: vmware/vra
 resources:
-    null_resource:
+    vra_block_device:
         subCategory: ""
-        description: The null_resource resource implements the standard resource lifecycle but takes no further action. The triggers argument allows specifying an arbitrary set of values that, when changed, will cause the resource to be replaced.
-        name: null_resource
-        title: null_resource Resource - terraform-provider-null
+        description: Creates a vra_block_device resource.
+        name: vra_block_device
+        title: vra_block_device
         examples:
-            - name: cluster
+            - name: disk1
               manifest: |-
                 {
-                  "connection": [
+                  "capacity_in_gb": 10,
+                  "name": "terraform_vra_block_device1",
+                  "persistent": true,
+                  "project_id": "${var.project_id}"
+                }
+              references:
+                project_id: var.project_id
+        argumentDocs:
+            capacity_in_gb: '- (Required) Capacity of block device in GB.'
+            constraints: '- (Optional) Storage, network, and extensibility constraints to be applied when provisioning through the project.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            custom_properties: '- Additional custom properties that may be used to extend the machine.'
+            deployment_id: '- ID of deployment associated with resource.'
+            description: '- (Optional) Describes machine within the scope of your organization and is not propagated to the cloud.'
+            disk_content_base_64: '- (Optional) Content of a disk, base64 encoded.'
+            encrypted: '- (Optional) Indicates whether block device should be encrypted or not.'
+            expand_snapshots: '- (Optional) Indicates whether snapshots of block devices should be included in the state. Applies only to first class block devices.'
+            external_id: '- External entity ID on provider side.'
+            external_region_id: '- External regionId of resource.'
+            external_zone_id: '- External zoneId of resource.'
+            id: '- ID of the block device snapshot.'
+            is_current: '- Indicates whether snapshot on block device is current.'
+            links: '- HATEOAS of entity.'
+            name: '- (Required) Human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            persistent: '- (Optional) Indicates whether block device survives a delete action.'
+            project_id: '- (Required) ID of project that current user belongs to.'
+            purge: '- (Optional) Indicates if the disk must be completely destroyed or should be kept in the system. Valid only for block devices with ‘persistent’ set to true. Used to destroy the resource.'
+            snapshots: '- Represents a machine snapshot.'
+            source_reference: '- (Optional) URI to use for block device. Example: ami-0d4cfd66'
+            status: '- Status of block device.'
+            tags: |-
+                - Set of tag keys and values to apply to the resource instance.
+                Example: [ { "key" : "vmware.enumeration.type", "value": "nebs_block" } ]
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+        importStatements: []
+    vra_block_device_snapshot:
+        subCategory: ""
+        description: Creates a VMware vRealize Automation vra_block_device_snapshot resource.
+        name: vra_block_device_snapshot
+        title: vra_block_device_snapshot
+        examples:
+            - name: snapshot1
+              manifest: |-
+                {
+                  "block_device_id": "${var.block_device_id}",
+                  "description": "terraform fcd snapshot"
+                }
+              references:
+                block_device_id: var.block_device_id
+        argumentDocs:
+            block_device_id: '- (Required) ID of block device.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            description: '- (Optional) Human-friendly description.'
+            is_current: '- Indicates whether snapshot on block device is current.'
+            links: '- HATEOAS of entity'
+            name: '- Human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            update_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+        importStatements: []
+    vra_blueprint:
+        subCategory: ""
+        description: A resource that can be used to create a vRealize Automation cloud template, formerly know as blueprint.
+        name: vra_blueprint
+        title: Resource vra_blueprint
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "content": "formatVersion: 1\ninputs:\n  image:\n    type: string\n    description: \"Image\"\n  flavor:\n    type: string\n    description: \"Flavor\"\nresources:\n  Machine:\n    type: Cloud.Machine\n    properties:\n      image: ${input.image}\n      flavor: ${input.flavor}\n",
+                  "description": "Created by vRA terraform provider",
+                  "name": "${var.blueprint_name}",
+                  "project_id": "${vra_project.this.id}"
+                }
+              references:
+                name: var.blueprint_name
+                project_id: vra_project.this.id
+        argumentDocs:
+            INFO: ', WARNING, ERROR.'
+            content: '- (Optional) Blueprint YAML content.'
+            content_source_id: '- ID of content source.'
+            content_source_path: '- Content source path.'
+            content_source_sync_at: '- Date when content source was last synced. The date is in ISO 8601 and UTC.'
+            content_source_sync_messages: '- Content source last sync messages.'
+            content_source_sync_status: '- Content source last sync status. Supported values: SUCCESSFUL, FAILED.'
+            content_source_type: '- Content source type.'
+            created_at: '- Date when entity was created. The date is in ISO 8601 and UTC.'
+            created_by: '- The user who created entity.'
+            description: '- (Optional) Human-friendly description.'
+            id: '- ID of cloud template.'
+            name: '- (Required) Human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- ID of organization that entity belongs to.'
+            project_id: '- (Required) ID of project that entity belongs to.'
+            project_name: '- Name of project that entity belongs to.'
+            request_scope_org: '- (Optional) Flag to indicate whether blueprint can be requested from any project in the organization that entity belongs to.'
+            self_link: '- HATEOAS of entity.'
+            status: '- Status of cloud template. Supported values: DRAFT, VERSIONED, RELEASED.'
+            total_released_versions: '- Total number of released versions.'
+            total_versions: '- Total number of versions.'
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+            updated_by: '- The user who last updated the entity.'
+            valid: '- Flag to indicate if the current content of the cloud template/blueprint is valid.'
+            validation_messages: '- List of validations messages.'
+        importStatements: []
+    vra_blueprint_version:
+        subCategory: ""
+        description: A resource that can be used to create a vRealize Automation cloud template version.
+        name: vra_blueprint_version
+        title: Resource vra_blueprint_version
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "blueprint_id": "${var.vra_blueprint_id}",
+                  "change_log": "First version",
+                  "description": "Released from vRA terraform provider",
+                  "release": true,
+                  "version": "${(random_integer.suffix.result / random_integer.suffix.result)}"
+                }
+              references:
+                blueprint_id: var.vra_blueprint_id
+        argumentDocs:
+            blueprint_description: '- Description of cloud template (blueprint).'
+            blueprint_id: '- (Required) ID of the cloud template  (blueprint).'
+            change_log: '- (Optional) Cloud template  (blueprint) version log.'
+            content: '- Blueprint YAML content.'
+            created_at: '- Date when the entity was created. Date and time format is ISO 8601 and UTC.'
+            created_by: '- User who created the entity.'
+            description: '- (Optional) Human-friendly description for the cloud template  (blueprint) version.'
+            id: '- ID of cloud template (blueprint) version.'
+            name: '- Name of cloud template (blueprint) version.'
+            org_id: '- ID of organization that entity belongs to.'
+            project_id: '- ID of project that entity belongs to.'
+            project_name: '- Name of project that entity belongs to.'
+            release: '- (Optional) Flag to indicate whether to release the version.'
+            status: '- Status of the cloud template (blueprint). Supported values: DRAFT, VERSIONED, RELEASED.'
+            updated_at: '- Date when the entity was last updated. Date and time format is ISO 8601 and UTC.'
+            updated_by: '- User who last updated the entity.'
+            valid: '- Flag to indicate if the current content of the cloud template (blueprint) is valid.'
+            version: '- (Required) Cloud template  (blueprint) version.'
+        importStatements: []
+    vra_catalog_item_entitlement:
+        subCategory: ""
+        description: A resource that can be used to create a vRealize Automation catalog item entitlement.
+        name: vra_catalog_item_entitlement
+        title: vra_catalog_item_entitlement
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "catalog_item_id": "${var.catalog_item_id}",
+                  "project_id": "${var.project_id}"
+                }
+              references:
+                catalog_item_id: var.catalog_item_id
+                project_id: var.project_id
+        argumentDocs:
+            catalog_item_id: '- (Required) The id of the catalog item to create the entitlement.'
+            definition: '- Represents a catalog item that is linked to a project via an entitlement.'
+            description: '- Description of the catalog item.'
+            icon_id: '- Icon id of associated catalog item.'
+            id: '- Id of the catalog item.'
+            name: '- Name of the catalog item.'
+            number_of_items: '- Number of items in the associated catalog source.'
+            project_id: '- (Required) The id of the project this entity belongs to.'
+            source_name: '- Catalog source name.'
+            source_type: '- Catalog source type.'
+            type: '- Content definition type.'
+        importStatements: []
+    vra_catalog_source_blueprint:
+        subCategory: ""
+        description: A resource that can be used to create a vRealize Automation catalog source of type cloud template (blueprint).
+        name: vra_catalog_source_blueprint
+        title: Resource vra_catalog_source_blueprint
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "name": "${var.catalog_source_name}",
+                  "project_id": "${var.vra_project_id}"
+                }
+              references:
+                name: var.catalog_source_name
+                project_id: var.vra_project_id
+        argumentDocs:
+            config: '- (Optional) Custom configuration of the catalog source as a map of key values.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            created_by: '- User who created the entity.'
+            description: '- (Optional) Human-friendly description.'
+            global: '- Flag indicating that all items can be requested across all projects.'
+            id: '- ID of catalog source.'
+            items_found: '- Number of items found in the catalog source.'
+            items_imported: '- Number of items imported from the catalog source.'
+            last_import_completed_at: '- Time at which the last import completed.'
+            last_import_errors: '- List of errors seen when the catalog source was last imported.'
+            last_import_started_at: '- Time at which the last import started.'
+            last_updated_by: '- User who last updated the catalog source.'
+            name: '- (Required) Human-friendly name used as an identifier in APIs that support this option.'
+            project_id: '- (Required) ID of the project this entity belongs to.'
+            type_id: '- Type of catalog source. Example: blueprint, CFT, etc.'
+        importStatements: []
+    vra_catalog_source_entitlement:
+        subCategory: ""
+        description: A resource that can be used to create a vRealize Automation catalog source entitlement.
+        name: vra_catalog_source_entitlement
+        title: vra_catalog_source_entitlement
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "catalog_source_id": "${var.catalog_source_blueprint_id}",
+                  "project_id": "${var.project_id}"
+                }
+              references:
+                catalog_source_id: var.catalog_source_blueprint_id
+                project_id: var.project_id
+        argumentDocs:
+            catalog_source_id: '- (Required) The id of the catalog source to create the entitlement.'
+            definition: '- Represents a catalog source that is linked to a project via an entitlement.'
+            description: '- Description of the catalog source.'
+            icon_id: '- Icon id of associated catalog source.'
+            id: '- Id of the catalog source.'
+            name: '- Name of the catalog source.'
+            number_of_items: '- Number of items in the associated catalog source.'
+            project_id: '- (Required) The id of the project this entity belongs to.'
+            source_name: '- Catalog source name.'
+            source_type: '- Catalog source type.'
+            type: '- Content definition type.'
+        importStatements: []
+    vra_cloud_account_aws:
+        subCategory: ""
+        description: Creates a vra_cloud_account_aws resource.
+        name: vra_cloud_account_aws
+        title: vra_cloud_account_aws
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "access_key": "${var.access_key}",
+                  "description": "terraform test cloud account aws",
+                  "name": "tf-vra-cloud-account-aws",
+                  "regions": [
+                    "us-east-1",
+                    "us-west-1"
+                  ],
+                  "secret_key": "${var.secret_key}",
+                  "tags": [
                     {
-                      "host": "${element(aws_instance.cluster.*.public_ip, 0)}"
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                access_key: var.access_key
+                secret_key: var.secret_key
+        argumentDocs:
+            access_key: '- (Required) Access key ID for AWS.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            description: '- (Optional) Human-friendly description.'
+            id: '- ID of AWS cloud account.'
+            links: '- HATEOAS of entity.'
+            name: '- (Required) Name of AWS cloud account.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            regions: '- (Optional) Set of region names enabled for the cloud account.'
+            secret_key: '- (Required) AWS Secret Access Key'
+            tags: |-
+                - (Optional) Set of tag keys and values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+        importStatements: []
+    vra_cloud_account_azure:
+        subCategory: ""
+        description: Creates a vra_cloud_account_azure resource.
+        name: vra_cloud_account_azure
+        title: vra_cloud_account_azure
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "application_id": "sample-application-id",
+                  "application_key": "sample-application=key",
+                  "description": "test cloud account",
+                  "name": "my-cloud-account-%d",
+                  "regions": [
+                    "centralus"
+                  ],
+                  "subscription_id": "sample-subscription-id",
+                  "tenant_id": "sample-tenant-id"
+                }
+        argumentDocs:
+            application_id: '- (Required) Azure Client Application ID.'
+            application_key: '- (Required) Azure Client Application Secret Key.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            description: '- (Optional) Human-friendly description.'
+            links: '- HATEOAS of entity.'
+            name: '- (Optional) Name of Azure cloud account.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            regions: '- (Optional) Set of region names enabled for the cloud account.'
+            subscription_id: '- (Required) Azure Subscription ID.'
+            tags: |-
+                - (Optional) Set of tag keys and values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            tenant_id: '- (Required) Azure Tenant ID.'
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+        importStatements: []
+    vra_cloud_account_gcp:
+        subCategory: ""
+        description: Creates a vra_cloud_account_gcp resource.
+        name: vra_cloud_account_gcp
+        title: vra_cloud_account_gcp
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "client_email": "client_email",
+                  "description": "terraform test cloud account gcp",
+                  "name": "tf-vra-cloud-account-gcp",
+                  "private_key": "private_key",
+                  "private_key_id": "private_key_id",
+                  "project_id": "project_id",
+                  "regions": [
+                    "us-west1",
+                    "us-west2"
+                  ],
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+        argumentDocs:
+            client_email: '- (Required) GCP Client email.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            description: '- (Optional) Human-friendly description.'
+            id: '- ID of GCP cloud account.'
+            links: '- HATEOAS of entity.'
+            name: '- (Required) Name of GCP cloud account.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            private_key: '- (Required) GCP Private key.'
+            private_key_id: '- (Required) GCP Private key ID.'
+            project_id: '- (Required) GCP Project ID.'
+            regions: '- (Optional) Set of region names enabled for the cloud account.'
+            tags: |-
+                - (Optional) Set of tag keys and values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+        importStatements: []
+    vra_cloud_account_nsxt:
+        subCategory: ""
+        description: Creates a vra_cloud_account_nsxt resource.
+        name: vra_cloud_account_nsxt
+        title: vra_cloud_account_nsxt
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "accept_self_signed_cert": true,
+                  "dc_id": "${var.vra_data_collector_id}",
+                  "description": "foobar",
+                  "hostname": "${var.hostname}",
+                  "name": "tf-nsx-t-account",
+                  "password": "${var.password}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
                     }
                   ],
-                  "provisioner": {
-                    "remote-exec": [
-                      {
-                        "inline": [
-                          "bootstrap-cluster.sh ${join(\" \", aws_instance.cluster.*.private_ip)}"
-                        ]
-                      }
-                    ]
-                  },
-                  "triggers": {
-                    "cluster_instance_ids": "${join(\",\", aws_instance.cluster.*.id)}"
-                  }
+                  "username": "${var.username}"
                 }
-              dependencies:
-                aws_instance.cluster: |-
+              references:
+                dc_id: var.vra_data_collector_id
+                hostname: var.hostname
+                password: var.password
+                username: var.username
+        argumentDocs:
+            accept_self_signed_cert: '- (Optional) Accept self-signed certificate when connecting to the cloud account.'
+            associated_cloud_account_ids: '- Cloud accounts associated with the cloud account.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            dc_id: '- (Optional) Identifier of a data collector VM deployed in the on premise infrastructure.'
+            description: '- (Optional) Human-friendly description.'
+            hostname: '- (Required) Host name for NSX-T cloud account.'
+            id: '- ID of NSX-T cloud account.'
+            links: '- HATEOAS of entity.'
+            name: '- (Optional) Name of NSX-T cloud account.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            password: '- (Required) Password used to authenticate to the cloud Account.'
+            tags: |-
+                - (Optional) Set of tag keys and values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+            username: '- (Required) Username used to authenticate to the cloud account.'
+        importStatements: []
+    vra_cloud_account_nsxv:
+        subCategory: ""
+        description: Creates a vra_cloud_account_nsxv resource.
+        name: vra_cloud_account_nsxv
+        title: vra_cloud_account_nsxv
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "accept_self_signed_cert": true,
+                  "dc_id": "${var.vra_data_collector_id}",
+                  "description": "foobar",
+                  "hostname": "${var.hostname}",
+                  "name": "tf-NSX-V-account",
+                  "password": "${var.password}",
+                  "tags": [
                     {
-                      "count": 3
+                      "key": "foo",
+                      "value": "bar"
                     }
-        argumentDocs: {}
+                  ],
+                  "username": "${var.username}"
+                }
+              references:
+                dc_id: var.vra_data_collector_id
+                hostname: var.hostname
+                password: var.password
+                username: var.username
+        argumentDocs:
+            accept_self_signed_cert: '- (Optional) Accept self-signed certificate when connecting to the cloud account.'
+            associated_cloud_account_ids: '- Cloud accounts associated to the cloud account.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            dc_id: '- (Optional) Identifier of a data collector VM deployed in the on premise infrastructure.'
+            description: '- (Optional) Human-friendly description.'
+            hostname: '- (Required) Host name for NSX-V cloud account.'
+            id: '- ID of NSX-V cloud account.'
+            links: '- HATEOAS of entity.'
+            name: '- (Optional) Name of NSX-V cloud account.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            password: '- (Required) Password used to authenticate to the cloud account.'
+            tags: |-
+                - (Optional) Set of tag keys and values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when entity was last updated. Date and time format is ISO 8601 and UTC.'
+            username: '- (Required) Username used to authenticate with the cloud account.'
+        importStatements: []
+    vra_cloud_account_vmc:
+        subCategory: ""
+        description: Creates a vra_cloud_account_vmc resource.
+        name: vra_cloud_account_vmc
+        title: vra_cloud_account_vmc
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "accept_self_signed_cert": true,
+                  "api_token": "${var.api_token}",
+                  "dc_id": "${var.data_collector_id}",
+                  "description": "tf test vmc cloud account",
+                  "name": "tf-vra-cloud-account-vmc",
+                  "nsx_hostname": "${var.nsx_hostname}",
+                  "regions": "${var.regions}",
+                  "sddc_name": "${var.sddc_name}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ],
+                  "vcenter_hostname": "${var.vcenter_hostname}",
+                  "vcenter_password": "${var.vcenter_password}",
+                  "vcenter_username": "${var.vcenter_username}"
+                }
+              references:
+                api_token: var.api_token
+                dc_id: var.data_collector_id
+                nsx_hostname: var.nsx_hostname
+                regions: var.regions
+                sddc_name: var.sddc_name
+                vcenter_hostname: var.vcenter_hostname
+                vcenter_password: var.vcenter_password
+                vcenter_username: var.vcenter_username
+        argumentDocs:
+            accept_self_signed_cert: '- (Optional) Accept self-signed certificate when connecting to the cloud account.'
+            api_token: '- (Required) VMC API access key.'
+            created_at: '- Date when entity was created. Date and time format is ISO 8601 and UTC.'
+            dc_id: '- (Optional) Identifier of a data collector VM deployed in the on premise infrastructure. Refer to the data-collector API to create or list data collector.'
+            description: '- (Optional) Human-friendly description.'
+            id: '- ID of the VMC cloud account.'
+            links: '- HATEOAS of entity.'
+            name: '- (Optional) Human-friendly name used as an identifier in APIs that support this option.'
+            nsx_hostname: '- (Required) IP address of the NSX Manager server in the specified SDDC / FQDN.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            regions: '- (Optional) Set of region names enabled for the cloud account.'
+            sddc_name: '- (Required) Identifier of the on-premise SDDC to be used by the cloud account. Note that NSX-V SDDCs are not supported.'
+            tags: |-
+                - (Optional) Set of tag keys and values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when the entity was last updated. Date and time format is ISO 8601 and UTC.'
+            vcenter_hostname: '- (Required) IP address or FQDN of the vCenter Server in the specified SDDC. The cloud proxy belongs on this vCenter.'
+            vcenter_password: '- (Required) Password used to authenticate to the cloud Account.'
+            vcenter_username: '- (Required) vCenter user name for the specified SDDC. The user requires CloudAdmin credentials. The user does not require CloudGlobalAdmin credentials.'
+        importStatements: []
+    vra_cloud_account_vsphere:
+        subCategory: ""
+        description: Creates a vra_cloud_account_vsphere resource.
+        name: vra_cloud_account_vsphere
+        title: vra_cloud_account_vsphere
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "accept_self_signed_cert": true,
+                  "associated_cloud_account_ids": [
+                    "${var.vra_cloud_account_nsxt_id}"
+                  ],
+                  "dc_id": "${var.vra_data_collector_id}",
+                  "description": "foobar",
+                  "hostname": "${var.hostname}",
+                  "name": "tf-vSphere-account",
+                  "password": "${var.password}",
+                  "regions": "${var.regions}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ],
+                  "username": "${var.username}"
+                }
+              references:
+                dc_id: var.vra_data_collector_id
+                hostname: var.hostname
+                password: var.password
+                regions: var.regions
+                username: var.username
+        argumentDocs:
+            accept_self_signed_cert: '- (Optional) Accept self-signed certificate when connecting to the cloud account.'
+            associated_cloud_account_ids: '- Cloud accounts associated with the cloud account.'
+            created_at: '- Date when  entity was created. Date and time format is ISO 8601 and UTC.'
+            dc_id: '- (Optional) Identifier of a data collector VM deployed in the on premise infrastructure.'
+            description: '- (Optional) Human-friendly description.'
+            hostname: '- (Required) IP address or FQDN of the vCenter Server. The cloud proxy belongs on this vCenter.'
+            id: '- (Optional) ID of the vSphere cloud account.'
+            links: '- HATEOAS of entity.'
+            name: '- (Optional) Name of the vSphere cloud account.'
+            org_id: '- ID of organization that entity belongs to.'
+            owner: '- Email of entity owner.'
+            password: '- (Required) Password used to authenticate to the cloud account.'
+            regions: '- (Required) A set of region names that are enabled for the cloud account.'
+            tags: |-
+                - (Optional) A set of tag keys and optional values to apply to the cloud account.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when the entity was last updated. Date and time format is ISO 8601 and UTC.'
+            username: '- (Required) vSphere username used to authenticate to the cloud account.'
+        importStatements: []
+    vra_content_source:
+        subCategory: ""
+        description: A resource that can be used to create a content source in vRealize Automation(vRA).
+        name: vra_content_source
+        title: Resource vra_content_source
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "config": [
+                    {
+                      "branch": "master",
+                      "content_type": "BLUEPRINT",
+                      "integration_id": "${var.integration_id}",
+                      "path": "blueprint01",
+                      "project_name": "${var.project_name}",
+                      "repository": "vracontent/vra8_content_source_test"
+                    }
+                  ],
+                  "description": "Some content Source",
+                  "name": "${var.content_source_name}",
+                  "project_id": "${var.project_id}",
+                  "sync_enabled": "false",
+                  "type_id": "com.gitlab"
+                }
+              references:
+                config.integration_id: var.integration_id
+                config.project_name: var.project_name
+                name: var.content_source_name
+                project_id: var.project_id
+        argumentDocs:
+            branch: '- Content source branch name.'
+            config: '- (Required) Content source custom configuration.'
+            content_type: '- Content source type. Supported values are BLUEPRINT, IMAGE, ABX_SCRIPTS, TERRAFORM_CONFIGURATION.'
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            created_by: '- The user the entity was created by.'
+            description: '- (Optional) A human-friendly description.'
+            id: '- The id of this cloud template.'
+            integration_id: '- Content source integration id as seen in vRA integrations.'
+            last_updated_at: '- Date when the entity was last updated. The date is in ISO 6801 and UTC.'
+            last_updated_by: '- The user the entity was last updated by.'
+            name: '- (Required) A human-friendly name for content source used as an identifier in APIs that support this option.'
+            org_id: '- The id of the organization this entity belongs to.'
+            path: '- Path to refer to in the content source repository and branch.'
+            project_id: '- (Required) The id of the project this entity belongs to.'
+            project_name: '- Name of the project.'
+            repository: '- Content source repository.'
+            sync_enabled: '- (Required) Flag indicating whether sync is enabled for this content source.'
+            type_id: '- (Required) Content Source type. Supported values are com.gitlab, com.github, com.vmware.marketplace, org.bitbucket.'
+        importStatements: []
+    vra_deployment:
+        subCategory: ""
+        description: A resource that can be used to create a vRealize Automation deployment.
+        name: vra_deployment
+        title: Resource vra_deployment
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "catalog_item_id": "${var.catalog_item_id}",
+                  "catalog_item_version": "${var.catalog_item_version}",
+                  "description": "Deployment description",
+                  "inputs": {
+                    "arrayProp": "${jsonencode([\"foo\", \"bar\", \"where\", \"waldo\"])}",
+                    "count": 1,
+                    "flag": false,
+                    "flavor": "small",
+                    "image": "centos",
+                    "number": 10,
+                    "objectProp": "${jsonencode({ \"key1\": \"value1\", \"key2\": [1, 2, 3, 4] })}"
+                  },
+                  "name": "${var.deployment_name}",
+                  "project_id": "${var.project_id}",
+                  "timeouts": [
+                    {
+                      "create": "30m",
+                      "delete": "30m",
+                      "update": "30m"
+                    }
+                  ]
+                }
+              references:
+                catalog_item_id: var.catalog_item_id
+                catalog_item_version: var.catalog_item_version
+                name: var.deployment_name
+                project_id: var.project_id
+            - name: this
+              manifest: |-
+                {
+                  "blueprint_id": "${var.blueprint_id}",
+                  "blueprint_version": "${var.blueprint_version}",
+                  "description": "Deployment description",
+                  "inputs": {
+                    "arrayProp": "${jsonencode([\"foo\", \"bar\", \"baz\"])}",
+                    "count": 1,
+                    "flag": true,
+                    "flavor": "small",
+                    "image": "centos",
+                    "objectProp": "${jsonencode({ \"key\": \"value\", \"key2\": [1, 2, 3] })}"
+                  },
+                  "name": "${var.deployment_name}",
+                  "project_id": "${var.project_id}",
+                  "timeouts": [
+                    {
+                      "create": "30m",
+                      "delete": "30m",
+                      "update": "30m"
+                    }
+                  ]
+                }
+              references:
+                blueprint_id: var.blueprint_id
+                blueprint_version: var.blueprint_version
+                name: var.deployment_name
+                project_id: var.project_id
+            - name: this
+              manifest: |-
+                {
+                  "description": "Deployment description",
+                  "name": "${var.deployment_name}",
+                  "project_id": "${var.project_id}"
+                }
+              references:
+                name: var.deployment_name
+                project_id: var.project_id
+        argumentDocs:
+            action_id: '- Identifier of the requested action.'
+            additional_expense: '- Additional expense incurred for the resource.'
+            approved_at: '- Time at which the request was approved.'
+            blueprint_content: '- (Optional) The content of the the cloud template to be used to request the deployment. Conflicts with blueprint_id and catalog_item_id.'
+            blueprint_id: '- (Optional) The id of the cloud template to be used to request the deployment. Conflicts with blueprint_content and catalog_item_id.'
+            blueprint_version: '- (Optional) The version of the cloud template to be used to request the deployment. Used only when blueprint_id is provided.'
+            cancelable: '- Indicates whether request can be canceled or not.'
+            catalog_item_id: '- (Optional) The id of the catalog item to be used to request the deployment. Conflicts with blueprint_id and blueprint_content.'
+            catalog_item_version: '- (Optional) The version of the catalog item to be used to request the deployment. Used only when catalog_item_id is provided.'
+            code: '- Expense sync message code if any.'
+            completed_at: '- Time at which the request completed.'
+            completed_tasks: '- The number of tasks completed while fulfilling this request.'
+            compute_expense: '- Compute expense of the entity.'
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            created_by: '- The user the entity was created by.'
+            depends_on: '- A list of other resources this resource depends on.'
+            description: '- (Optional) A human-friendly description.'
+            details: '- Longer user-friendly details of the request.'
+            dismissed: '- Indicates whether request is in dismissed state.'
+            expand_project: '- (Optional) Flag to indicate whether to expand project information.'
+            expense: '- Expense incurred for the deployment.'
+            id: '- The id of the deployment.'
+            initialized_at: '- Time at which the request was initialized.'
+            inputs: '- (Optional) Inputs provided by the user. For inputs including those with default values, refer to inputs_including_defaults.'
+            inputs_including_defaults: '- All the inputs applied during last create/update operation, including those with default values. For the list of inputs provided by the user in the configuration, refer to inputs.'
+            last_request: '- Represents deployment requests.'
+            last_update_time: '- Last expense sync time.'
+            last_updated_at: '- TDate when the entity was last updated. The date is in ISO 6801 and UTC.'
+            last_updated_by: '- The user that last updated the deployment.'
+            lease_expire_at: '- Date when the deployment lease expire. The date is in ISO 6801 and UTC.'
+            message: '- Expense sync message if any.'
+            name: '- (Required) The name of the deployment.'
+            network_expense: '- Network expense of the entity.'
+            org_id: '- The Id of the organization this deployment belongs to.'
+            outputs: '- Request outputs.'
+            owner: '- (Optional) The user this deployment belongs to. At create, the owner is ignored but is used to update during next apply.'
+            project: '- The project this entity belongs to.'
+            project_id: '- (Required) The id of the project this deployment belongs to.'
+            properties_json: '- List of properties in the encoded JSON string format.'
+            reason: '- (Optional) Reason for requesting/updating a blueprint.'
+            requested_by: '- The user that initiated the request.'
+            resource_name: '- Optional resource name to which the request applies to.'
+            resources: '- Expanded resources for the deployment. Content of this property will not be maintained backward compatible.'
+            state: '- The current state of the resource. Supported values are PARTIAL, TAINTED, OK.'
+            status: '- Request overall execution status. Supported values: CREATED, PENDING, INITIALIZATION, CHECKING_APPROVAL, APPROVAL_PENDING, INPROGRESS, COMPLETION, APPROVAL_REJECTED, ABORTED, SUCCESSFUL, FAILED.'
+            storage_expense: '- Storage expense of the entity.'
+            sync_status: '- The current sync status. Supported values are SUCCESS, MISSING, STALE.'
+            total_expense: '- Total expense of the entity.'
+            total_tasks: -The total number of tasks need to be completed to fulfil this request.
+            type: '- Type of the resource.'
+            unit: '- Monetary unit.'
+            updated_at: '- Last update time (e.g. date format ‘2019-07-13T23:16:49.310Z’).'
+            version: '- Version of the entity, if applicable.'
+        importStatements: []
+    vra_fabric_compute:
+        subCategory: ""
+        description: Updates a fabric_compute resource.
+        name: vra_fabric_compute
+        title: vra_fabric_compute
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+        argumentDocs:
+            created_at: '- Date when the entity was created. The date is in ISO 8601 and UTC.'
+            custom_properties: '- A list of key value pair of custom properties for the fabric compute resource.'
+            description: '- A human-friendly description.'
+            external_id: '- The id of the external entity on the provider side.'
+            external_region_id: '- The external region id of the fabric compute.'
+            external_zone_id: '- The external zone id of the fabric compute.'
+            key: '- Tag’s key.'
+            lifecycle_state: '- Lifecycle status of the compute instance.'
+            links: '- HATEOAS of the entity.'
+            name: '- A human-friendly name used as an identifier for the fabric compute resource instance.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            power_state: '- Power state of fabric compute instance.'
+            tags: '-  A set of tag keys and optional values that were set on this resource:'
+            type: '- Type of the fabric compute instance.'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+            value: '- Tag’s value.'
+        importStatements: []
+    vra_fabric_datastore_vsphere:
+        subCategory: ""
+        description: Updates a fabric_datastore_vsphere resource.
+        name: vra_fabric_datastore_vsphere
+        title: vra_fabric_datastore_vsphere
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+        argumentDocs:
+            cloud_account_ids: '- Set of ids of the cloud accounts this entity belongs to.'
+            created_at: '- Date when the entity was created. The date is in ISO 8601 and UTC.'
+            description: '- A human-friendly description.'
+            external_id: '- External entity Id on the provider side.'
+            external_region_id: '- Id of datacenter in which the datastore is present.'
+            free_size_gb: '- Indicates free size available in datastore.'
+            key: '- Tag’s key.'
+            links: '- HATEOAS of the entity'
+            name: '- A human-friendly name used as an identifier for the vSphere fabric datastore resource instance.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            tags: '-  A set of tag keys and optional values that were set on this resource:'
+            type: '- Type of datastore.'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+            value: '- Tag’s value.'
+        importStatements: []
+    vra_fabric_network_vsphere:
+        subCategory: ""
+        description: Updates a fabric_network_vsphere resource.
+        name: vra_fabric_network_vsphere
+        title: vra_fabric_network_vsphere
+        examples:
+            - name: simple
+              manifest: |-
+                {
+                  "cidr": "${var.cidr}",
+                  "default_gateway": "${var.gateway}",
+                  "domain": "${var.domain}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                cidr: var.cidr
+                default_gateway: var.gateway
+                domain: var.domain
+        argumentDocs:
+            cidr: '- Network CIDR to be used.'
+            cloud_account_ids: '- Set of ids of the cloud accounts this entity belongs to.'
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            default_gateway: '- IPv4 default gateway to be used.'
+            default_ipv6_gateway: '- IPv6 default gateway to be used.'
+            dns_search_domains: '- List of dns search domains for the vSphere network.'
+            dns_server_addresses: '- A human-friendly name used as an identifier in APIs that support this option.'
+            domain: '- Domain for the vSphere network.'
+            external_id: '- External entity Id on the provider side.'
+            external_region_id: '- The id of the region for which this network is defined.'
+            id: '- ID of the vRA fabric network.'
+            ipv6_cidr: '-  Network IPv6 CIDR to be used.'
+            is_default: '- Indicates whether this is the default subnet for the zone.'
+            is_public: '- Indicates whether the sub-network supports public IP assignment.'
+            links: '- HATEOAS of the entity'
+            name: '- A human-friendly name used as an identifier in APIs that support this option.'
+            organization_id: '- ID of organization that entity belongs to.'
+            tags: |-
+                -  Set of tag keys and values to apply to the resource.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_flavor_profile:
+        subCategory: ""
+        description: Provides a data lookup for vra_flavor_profile.
+        name: vra_flavor_profile
+        title: vra_flavor_profile
+        examples:
+            - name: my-aws-flavor-profile
+              manifest: |-
+                {
+                  "description": "My AWS flavor",
+                  "flavor_mapping": [
+                    {
+                      "instance_type": "t2.small",
+                      "name": "small"
+                    },
+                    {
+                      "instance_type": "t2.medium",
+                      "name": "medium"
+                    }
+                  ],
+                  "name": "AWS",
+                  "region_id": "${data.vra_region.aws.id}"
+                }
+            - name: my-vsphere-flavor-profile
+              manifest: |-
+                {
+                  "description": "My vSphere flavor",
+                  "flavor_mapping": [
+                    {
+                      "cpu_count": 2,
+                      "memory": 2048,
+                      "name": "small"
+                    },
+                    {
+                      "cpu_count": 4,
+                      "memory": 4096,
+                      "name": "medium"
+                    }
+                  ],
+                  "name": "vSphere",
+                  "region_id": "${data.vra_region.vsphere.id}"
+                }
+        argumentDocs:
+            cloud_account_id: '- Id of the cloud account this flavor profile belongs to.'
+            cpu_count: '- (Optional) Number of CPU cores. Mandatory for private clouds such as vSphere. Only instance_type or cpu_count/memory must be specified.'
+            created_at: '- Date when the entity was created. The date is in ISO 8601 and UTC.'
+            description: '- (Optional) A human-friendly description.'
+            external_region_id: '- The id of the region for which this profile is defined.'
+            flavor_mapping: '- (Optional) A list of the flavor mappings defined for the corresponding cloud end-point region.'
+            instance_type: '- (Optional) The value of the instance type in the corresponding cloud. Mandatory for public clouds. Only instance_type or cpu_count/memory must be specified.'
+            links: '- HATEOAS of entity.'
+            memory: '- (Optional) Total amount of memory (in megabytes). Mandatory for private clouds such as vSphere. Only instance_type or cpu_count/memory must be specified.'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            region_id: '- (Required) The id of the region for which this profile is defined.'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_image_profile:
+        subCategory: ""
+        description: Provides a data lookup for vra_image_profile.
+        name: vra_image_profile
+        title: vra_image_profile
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "description": "test image profile",
+                  "image_mapping": [
+                    {
+                      "constraints": [
+                        {
+                          "expression": "!env:Test",
+                          "mandatory": true
+                        },
+                        {
+                          "expression": "foo:bar",
+                          "mandatory": false
+                        }
+                      ],
+                      "image_id": "${data.vra_image.centos.id}",
+                      "name": "centos"
+                    },
+                    {
+                      "cloud_config": "runcmd echo 'Hello'",
+                      "image_id": "${data.vra_image.photon.id}",
+                      "name": "photon"
+                    }
+                  ],
+                  "name": "vra-image-profile",
+                  "region_id": "${data.vra_region.this.id}"
+                }
+              references:
+                image_mapping.image_id: data.vra_image.photon.id
+                region_id: data.vra_region.this.id
+        argumentDocs:
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            description: '- (Optional) A human-friendly description.'
+            external_region_id: '- The external regionId of the resource.'
+            image_mapping: '- Image mapping defined for the corresponding region.'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            owner: '- Email of the user that owns the entity.'
+            region_id: '- (Required) The id of the region for which this profile is defined as in vRealize Automation(vRA).'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_integration:
+        subCategory: ""
+        description: Creates a vra_integration resource.
+        name: vra_integration
+        title: vra_integration
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "description": "SaltStack Integration",
+                  "integration_properties": {
+                    "hostName": "${var.hostname}"
+                  },
+                  "integration_type": "saltstack",
+                  "name": "saltstack",
+                  "private_key": "${var.password}",
+                  "private_key_id": "${var.username}",
+                  "tags": [
+                    {
+                      "key": "created_by",
+                      "value": "vra-terraform-provider"
+                    }
+                  ]
+                }
+              references:
+                private_key: var.password
+                private_key_id: var.username
+        argumentDocs:
+            associated_cloud_account_ids: '- (Optional) Ids of the cloud accounts to associate with this integration.'
+            certificate: '- (Optional) Certificate to be used to connect to the integration.'
+            created_at: '- Date when the entity was created. The date is in ISO 8601 and UTC.'
+            custom_properties: '- (Optional) Additional custom properties that may be used to extend the Integration.'
+            description: '- (Optional) A human-friendly description.'
+            id: '- (Optional) The id of the integration.'
+            integration_properties: '- (Required) Integration specific properties supplied in as name value pairs.'
+            integration_type: '- (Required) Integration type.'
+            links: '- HATEOAS of entity.'
+            name: '- (Required) The name of the integration.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            private_key: '- (Optional) Secret access key or password to be used to authenticate with the integration.'
+            private_key_id: '- (Optional) Access key id or username to be used to authenticate with the integration.'
+            tags: '- (Optional) A set of tag keys and optional values to apply to the integration. Example: [ { "key" : "provider", "value": "vmware" } ].'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_load_balancer:
+        subCategory: ""
+        description: Creates a vra_load_balancer resource.
+        name: vra_load_balancer
+        title: vra_load_balancer
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "custom_properties": {
+                    "edgeClusterRouterStateLink": "/resources/routers/\u003cuuid\u003e",
+                    "tier0LogicalRouterStateLink": "/resources/routers/\u003cuuid\u003e"
+                  },
+                  "description": "My Load Balancer",
+                  "name": "my-load-balancer",
+                  "nics": [
+                    {
+                      "network_id": "${data.vra_network.my-network.id}"
+                    }
+                  ],
+                  "project_id": "${vra_project.my-project.id}",
+                  "routes": [
+                    {
+                      "health_check_configuration": [
+                        {
+                          "healthy_threshold": 10,
+                          "interval_seconds": 30,
+                          "port": "80",
+                          "protocol": "TCP",
+                          "timeout_seconds": 10,
+                          "unhealthy_threshold": 2
+                        }
+                      ],
+                      "member_port": "80",
+                      "member_protocol": "TCP",
+                      "port": "80",
+                      "protocol": "TCP"
+                    }
+                  ],
+                  "targets": [
+                    {
+                      "machine_id": "${vra_machine.my_machine.id}"
+                    }
+                  ]
+                }
+              references:
+                nics.network_id: data.vra_network.my-network.id
+                project_id: vra_project.my-project.id
+                targets.machine_id: vra_machine.my_machine.id
+        argumentDocs:
+            address: '- Primary address allocated or in use by this load balancer. The address could be an in the form of a publicly resolvable DNS name or an IP address.'
+            algorithm: '- Algorithm employed for load balancing.'
+            algorithm_parameters: '- Parameters need for load balancing algorithm.Use newline to separate multiple parameters.'
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            custom_properties: '- (Optional) Additional custom properties that may be used to extend the machine.'
+            deployment_id: '- (Optional) The id of the deployment that is associated with this resource.'
+            description: '- (Optional) Describes machine within the scope of your organization and is not propagated to the cloud.'
+            external_id: '- External entity Id on the provider side.'
+            external_region_id: '- The external regionId of the resource.'
+            external_zone_id: '- The external regionId of the resource.'
+            health_check_configuration: '- Load balancer health check configuration.'
+            healthy_threshold: '- Number of consecutive successful checks before considering a particular back-end instance as healthy.'
+            http_method: '- HTTP or HTTPS method to use when sending a health check request.'
+            internet_facing: '- (Optional) An Internet-facing load balancer has a publicly resolvable DNS name, so it can route requests from clients over the Internet to the instances that are registered with the load balancer.'
+            interval_seconds: '- Interval (in seconds) at which the health checks will be performed.'
+            links: '- HATEOAS of the entity.'
+            member_port: '- Member port where the traffic is routed to.'
+            member_protocol: '- The protocol of the member traffic.'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            nics: '- (Required) A set of network interface specifications for this load balancer.'
+            organization_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            passive_monitor: '- Enable passive monitor mode. This setting only applies to NSX-T.'
+            port: '- Port on the back-end instance machine to use for the health check.'
+            project_id: '- (Required) The id of the project the current user belongs to.'
+            protocol: '- The protocol used for the health check.'
+            request_body: '- Request body. Used by HTTP, HTTPS, TCP, UDP.'
+            response_body: '- Expected response body. Used by HTTP, HTTPS, TCP, UDP.'
+            routes: '- (Required) The load balancer route configuration regarding ports and protocols.'
+            tags: |-
+                - A set of tag keys and optional values that were set on this resource instance.
+                example: [ { "key" : "vmware.enumeration.type", "value": "nebs_block" } ]
+            tags.key: '- Tag’s key.'
+            tags.value: '- Tag’s value.'
+            targets: '- A list of links to target load balancer pool members. Links can be to either a machine or a machine''s network interface.'
+            timeout_seconds: '- Timeout (in seconds) to wait for a response from the back-end instance.'
+            unhealthy_threashold: '- Number of consecutive check failures before considering a particular back-end instance as unhealthy.'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+            urlPath: '- URL path on the back-end instance against which a request will be performed for the health check. Useful when the health check protocol is HTTP/HTTPS.'
+        importStatements: []
+    vra_machine:
+        subCategory: ""
+        description: Creates a vra_machine resource.
+        name: vra_machine
+        title: vra_machine
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "boot_config": [
+                    {
+                      "content": "#cloud-config\n  users:\n  - default\n  - name: myuser\n    sudo: ['ALL=(ALL) NOPASSWD:ALL']\n    groups: [wheel, sudo, admin]\n    shell: '/bin/bash'\n    ssh-authorized-keys: |\n      ssh-rsa your-ssh-rsa:\n    - sudo sed -e 's/.*PasswordAuthentication yes.*/PasswordAuthentication no/' -i /etc/ssh/sshd_config\n    - sudo service sshd restart\n"
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "expression": "AWS",
+                      "mandatory": true
+                    }
+                  ],
+                  "description": "terrafrom test machine",
+                  "disks": [
+                    {
+                      "block_device_id": "${vra_block_device.disk1.id}"
+                    },
+                    {
+                      "block_device_id": "${vra_block_device.disk2.id}"
+                    }
+                  ],
+                  "flavor": "medium",
+                  "image": "ubuntu2",
+                  "name": "tf-machine",
+                  "nics": [
+                    {
+                      "network_id": "${data.vra_network.this.id}"
+                    }
+                  ],
+                  "project_id": "${data.vra_project.this.id}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                disks.block_device_id: vra_block_device.disk2.id
+                nics.network_id: data.vra_network.this.id
+                project_id: data.vra_project.this.id
+        argumentDocs:
+            address: '- Primary address allocated or in use by this machine. The actual type of the address depends on the adapter type. Typically it is either the public or the external IP address.'
+            addresses: |-
+                - (Optional) List of IP addresses allocated or in use by this network interface.
+                example: [ "10.1.2.190" ]
+            block_device_id: '- (Required) ID of the existing block device.'
+            boot_config: '- (Optional)  Machine boot config that will be passed to the instance. Used to perform common automated configuration tasks and even run scripts after instance starts.'
+            constraints: |-
+                - Constraints used to drive placement policies for the virtual machine produced from the specification. Constraint expressions are matched against tags on existing placement targets.
+                Example: [{"mandatory" : "true", "expression": "environment":"prod"}, {"mandatory" : "false", "expression": "pci"}]
+            content: '- (Optional) Calid cloud config data in json-escaped yaml syntax.'
+            created_at: '- Date when the entity was created. Date and time format is ISO 8601 and UTC.'
+            custom_properties: '- (Optional) Additional properties that may be used to extend the base resource.'
+            deployment_id: '- (Optional) Describes machine within the scope of your organization and is not propagated to the cloud.'
+            description: '- (Optional) A human-friendly description.'
+            device_index: '- (Optional) The device index of this network interface.'
+            disks: '- (Optional) Specification for attaching/detaching disks to a machine.'
+            disks_list: '- List of all disks attached to a machine including boot disk, and additional block devices attached using the disks attribute.'
+            disks_list.block_device_id: '- ID of existing block device.'
+            disks_list.description: '- Human-friendly description.'
+            disks_list.name: '- Human-friendly block-device name used as an identifier in APIs that support this option.'
+            expression: '- (Required) Constraint that is conveyed to the policy engine. An expression of the form "[!]tag-key[:[tag-value]]", used to indicate a constraint match on keys and values of tags.'
+            external_id: '- External entity ID on the provider side.'
+            external_region_id: '- External regionId of the resource.'
+            external_zone_id: '- External zoneId of the resource.'
+            flavor: '- (Required) Flavor of machine instance.'
+            image: '- (Optional) Type of image used for this machine.'
+            image_disk_constraints: '- (Optional) Constraints that are used to drive placement policies for the image disk. Constraint expressions are matched against tags on existing placement targets. example: [{"mandatory" : "true", "expression": "environment:prod"}, {"mandatory" : "false", "expression": "pci"}]. It is nested argument with the following properties.'
+            image_ref: '- (Optional) Direct image reference used for this machine (name, path, location, uri, etc.). Valid if no image property is provided'
+            key: '- (Required) Tag’s key.'
+            links: '- HATEOAS of the entity'
+            mandatory: '- (Required) Indicates whether this constraint should be strictly enforced or not.'
+            name: '- (Optional) Human-friendly block-device name used as an identifier in APIs that support this option.'
+            network_id: '- (Required) ID of the network instance that this network interface plugs into.'
+            nics: '- (Optional) Set of network interface controller specifications for this machine. If not specified, then a default network connection will be created.'
+            organization_id: '- ID of the organization this entity belongs to.'
+            owner: '- Email of entity owner.'
+            power_state: '- Power state of machine.'
+            project_id: '- ID of project that resource belongs to.'
+            security_group_ids: '- (Optional) List of security group ids which this network interface will be assigned to.'
+            tags: '- (Optional) Set of tag keys and optional values that should be set on any resource that is produced from this specification. example: [ { "key" : "ownedBy", "value": "Rainpole" } ]. It is nested argument with the following properties.'
+            update_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+            value: '- (Required) Tag’s value.'
+        importStatements: []
+    vra_network:
+        subCategory: ""
+        description: Provides a VMware vRA vra_network resource.
+        name: vra_network
+        title: vra_network
+        examples:
+            - name: my_network
+              manifest: |-
+                {
+                  "constraints": [
+                    {
+                      "expression": "pci",
+                      "mandatory": true
+                    }
+                  ],
+                  "name": "terraform_vra_network-%d",
+                  "outbound_access": false,
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+        argumentDocs:
+            cidr: '- IPv4 address range of the network in CIDR format.'
+            constraints: '- List of storage, network and extensibility constraints to be applied when provisioning through this project.'
+            custom_properties: '- (Optional) Additional properties that may be used to extend the base resource.'
+            deployment_id: '- (Optional) Deployment id that is associated with this resource.'
+            description: '- (Optional) A human-friendly description.'
+            external_id: '- External entity Id on the provider side.'
+            external_zone_id: '- The external zoneId of the resource.'
+            links: '- HATEOAS of the entity'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            organization_id: '- The id of the organization this entity belongs to.'
+            outbound_access: '- (Optional) Flag to indicate if the network needs to have outbound access or not. Default is true. This field will be ignored if there is proper input for networkType customProperty.'
+            owner: '- Email of the user that owns the entity.'
+            project_id: '- (Required) The id of the project this resource belongs to.'
+            self_link: '- Self link of this request.'
+            tags: |-
+                - A set of tag keys and optional values that were set on this resource.
+                example: [ { "key" : "ownedBy", "value": "Rainpole" } ]
+            update_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_network_ip_range:
+        subCategory: ""
+        description: Creates a network_ip_range resource.
+        name: vra_network_ip_range
+        title: vra_network_ip_range
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "description": "Internal Network IP Range Example",
+                  "end_ip_address": "${var.end_ip}",
+                  "fabric_network_ids": [
+                    "${data.fabric_network.subnet.id}"
+                  ],
+                  "ip_version": "${var.ip_version}",
+                  "name": "example-ip-range",
+                  "start_ip_address": "${var.start_ip}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                end_ip_address: var.end_ip
+                ip_version: var.ip_version
+                start_ip_address: var.start_ip
+        argumentDocs:
+            created_at: '- Date when the entity was created. The date is in ISO 8601 and UTC.'
+            description: '- (Optional) A human-friendly description.'
+            end_ip_address: '- (Required) End IP address of the range.'
+            external_id: '- External entity Id on the provider side.'
+            fabric_network_ids: '- (Optional) The Ids of the fabric networks.'
+            id: '- ID of the network IP range'
+            ip_version: '- (Required) IP address version: IPv4 or IPv6.'
+            links: '- HATEOAS of the entity'
+            name: '- (Required) The name of the network IP range.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            start_ip_address: '- (Required) Start IP address of the range.'
+            tags: |-
+                -  (Optional) Set of tag keys and values to apply to the resource.
+                Example: [ { "key" : "vmware", "value": "provider" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_network_profile:
+        subCategory: ""
+        description: Provides a data lookup for vra_network_profile.
+        name: vra_network_profile
+        title: vra_network_profile
+        examples:
+            - name: simple
+              manifest: |-
+                {
+                  "description": "Simple Network Profile with no isolation.",
+                  "fabric_network_ids": [
+                    "${data.vra_fabric_network.subnet_1.id}",
+                    "${data.vra_fabric_network.subnet_2.id}"
+                  ],
+                  "isolation_type": "NONE",
+                  "name": "no-isolation",
+                  "region_id": "${data.vra_region.this.id}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+        argumentDocs:
+            cloud_account_id: '- The ID of the cloud account this flavor profile belongs to.'
+            created_at: '- Date when  entity was created. Date and time format is ISO 8601 and UTC.'
+            custom_properties: '- (Optional) Additional properties that may be used to extend the Network Profile object that is produced from this specification. For isolationType security group, datastoreId identifies the Compute Resource Edge datastore. computeCluster and resourcePoolId identify the Compute Resource Edge cluster. For isolationType subnet, distributedLogicalRouterStateLink identifies the on-demand network distributed local router. onDemandNetworkIPAssignmentType identifies the on-demand network IP range assignment type static, dynamic, or mixed.'
+            description: '- (Optional) A human-friendly description.'
+            external_region_id: '- The external regionId of the resource.'
+            fabric_network_ids: |-
+                - (Optional) A list of fabric network Ids which are assigned to the network profile.
+                example: [ "6543" ]
+            isolated_external_fabric_network_id: '- (Optional) The id of the fabric network used for outbound access.'
+            isolated_network_cidr_prefix: '- The CIDR prefix length to be used for the isolated networks that are created with the network profile.'
+            isolated_network_domain_cidr: '- CIDR of the isolation network domain.'
+            isolated_network_domain_id: '- The id of the network domain used for creating isolated networks.'
+            isolation_type: '- Specifies the isolation type e.g. none, subnet or security group'
+            links: '- HATEOAS of the entity'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- ID of organization that entity belongs to.'
+            organization_id: '- The id of the organization this entity belongs to. Deprecated, refer to org_id instead.'
+            owner: '- Email of the user that owns the entity.'
+            region_id: '- (Required) The id of the region for which this profile is defined as in vRealize Automation(vRA).'
+            security_group_ids: |-
+                - A list of security group Ids which are assigned to the network profile.
+                example: [ "6545" ]
+            tags: |-
+                - A set of tag keys and optional values that were set on this Network Profile.
+                example: [ { "key" : "ownedBy", "value": "Rainpole" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_project:
+        subCategory: ""
+        description: Provides a VMware vRealize Automation vra_project resource.
+        name: vra_project
+        title: vra_project
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "administrator_roles": [
+                    {
+                      "email": "jason@vra.local",
+                      "type": "user"
+                    },
+                    {
+                      "email": "jason-group@vra.local",
+                      "type": "group"
+                    }
+                  ],
+                  "constraints": [
+                    {
+                      "extensibility": [
+                        {
+                          "expression": "foo:bar",
+                          "mandatory": false
+                        },
+                        {
+                          "expression": "environment:test",
+                          "mandatory": true
+                        }
+                      ],
+                      "network": [
+                        {
+                          "expression": "foo:bar",
+                          "mandatory": false
+                        },
+                        {
+                          "expression": "environment:test",
+                          "mandatory": true
+                        }
+                      ],
+                      "storage": [
+                        {
+                          "expression": "foo:bar",
+                          "mandatory": false
+                        },
+                        {
+                          "expression": "environment:test",
+                          "mandatory": true
+                        }
+                      ]
+                    }
+                  ],
+                  "custom_properties": {
+                    "foo": "bar",
+                    "foo2": "bar2"
+                  },
+                  "description": "terraform test project",
+                  "machine_naming_template": "${resource.name}-${####}",
+                  "member_roles": [
+                    {
+                      "email": "tony@vra.local",
+                      "type": "user"
+                    },
+                    {
+                      "email": "tony-group@vra.local",
+                      "type": "group"
+                    }
+                  ],
+                  "name": "${var.project_name}",
+                  "operation_timeout": 6000,
+                  "placement_policy": "SPREAD",
+                  "shared_resources": false,
+                  "supervisor_roles": [
+                    {
+                      "email": "ethan@vra.local",
+                      "type": "user"
+                    },
+                    {
+                      "email": "ethan-group@vra.local",
+                      "type": "group"
+                    }
+                  ],
+                  "viewer_roles": [
+                    {
+                      "email": "shauna@vra.local",
+                      "type": "user"
+                    },
+                    {
+                      "email": "shauna-group@vra.local",
+                      "type": "group"
+                    }
+                  ],
+                  "zone_assignments": [
+                    {
+                      "cpu_limit": 1024,
+                      "max_instances": 2,
+                      "memory_limit_mb": 8192,
+                      "priority": 1,
+                      "storage_limit_gb": 65536,
+                      "zone_id": "${data.vra_zone.this.id}"
+                    }
+                  ]
+                }
+              references:
+                name: var.project_name
+                zone_assignments.zone_id: data.vra_zone.this.id
+        argumentDocs:
+            administrator_roles: instead.
+            administrators: '- (Optional) A list of administrator users associated with the project. Only administrators can manage project''s configuration.'
+            constraints: '- (Optional) A list of storage, network, and extensibility constraints to be applied when provisioning through this project.'
+            custom_properties: '- (Optional) The project custom properties which are added to all requests in this project.'
+            description: '- (Optional) A human-friendly description.'
+            machine_naming_template: '- (Optional) The naming template to be used for resources provisioned in this project.'
+            member_roles: instead.
+            members: '- (Optional) A list of member users associated with the project.'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            operation_timeout: '- (Optional) The timeout that should be used for cloud template operations and provisioning tasks. The timeout is measured in seconds.'
+            placement_policy: '- (Optional) The placement policy that will be applied when selecting a cloud zone for provisioning. Must be one of DEFAULT or SPREAD.'
+            shared_resources: '- (Optional) Specifies whether the resources in this projects are shared or not. If not set default will be used.'
+            supervisor_roles: '- (Optional) Supervisor users or groups associated with the project.'
+            viewer_roles: instead.
+            viewers: '- (Optional) A list of viewer users associated with the project.'
+            zone_assignments: '- (Optional) A list of configurations for zone assignment to a project.'
+        importStatements: []
+    vra_storage_profile:
+        subCategory: ""
+        description: Provides a data lookup for vra_storage_profile.
+        name: vra_storage_profile
+        title: vra_storage_profile
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "default_item": false,
+                  "description": "vSphere Storage Profile with standard independent non-persistent disk.",
+                  "disk_properties": {
+                    "independent": "true",
+                    "limitIops": "2000",
+                    "persistent": "false",
+                    "provisioningType": "eagerZeroedThick",
+                    "shares": "1500",
+                    "sharesLevel": "custom"
+                  },
+                  "disk_target_properties": {
+                    "datastoreId": "${data.vra_fabric_datastore_vsphere.this.id}",
+                    "storagePolicyId": "${data.vra_fabric_storage_policy_vsphere.this.id}"
+                  },
+                  "name": "vSphere-standard-independent-non-persistent-disk",
+                  "region_id": "${data.vra_region.this.id}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+            - name: this
+              manifest: |-
+                {
+                  "default_item": false,
+                  "description": "AWS Storage Profile with instance store device type.",
+                  "disk_properties": {
+                    "deviceType": "instance-store"
+                  },
+                  "name": "aws-with-instance-store",
+                  "region_id": "${data.vra_region.this.id}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+            - name: this
+              manifest: |-
+                {
+                  "default_item": false,
+                  "description": "Azure Storage Profile with managed disks.",
+                  "disk_properties": {
+                    "azureDataDiskCaching": "None",
+                    "azureManagedDiskType": "Standard_LRS",
+                    "azureOsDiskCaching": "None"
+                  },
+                  "name": "azure-with-managed-disks",
+                  "region_id": "${data.vra_region.this.id}",
+                  "supports_encryption": false,
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+        argumentDocs:
+            cloud_account_id: '- Id of the cloud account this storage profile belongs to.'
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            default_item: '- Indicates if this storage profile is a default profile.'
+            description: '- (Optional) A human-friendly description.'
+            disk_properties: '- (Optional) Map of storage properties that are to be applied on disk while provisioning.'
+            disk_target_properties: '- (Optional) Map of storage placements to know where the disk is provisioned.'
+            external_region_id: '- The id of the region as seen in the cloud provider for which this profile is defined.'
+            links: '- HATEOAS of the entity'
+            name: '- A human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            region_id: '- (Required) The id of the region for which this profile is defined as in vRealize Automation(vRA).'
+            supports_encryption: '- (Optional) Indicates whether this storage profile supports encryption or not.'
+            tags: |-
+                - A set of tag keys and optional values that were set on this Network Profile.
+                example: [ { "key" : "ownedBy", "value": "Rainpole" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_storage_profile_aws:
+        subCategory: ""
+        description: Provides a data lookup for vra_storage_profile_aws.
+        name: vra_storage_profile_aws
+        title: vra_storage_profile_aws
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "default_item": false,
+                  "description": "AWS Storage Profile with instance store device type.",
+                  "device_type": "ebs",
+                  "iops": "1000",
+                  "name": "aws-with-instance-store-1",
+                  "region_id": "${data.vra_region.this.id}",
+                  "supports_encryption": false,
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ],
+                  "volume_type": "io1"
+                }
+              references:
+                region_id: data.vra_region.this.id
+            - name: this
+              manifest: |-
+                {
+                  "default_item": false,
+                  "description": "AWS Storage Profile with instance store device type.",
+                  "device_type": "instance-store",
+                  "name": "aws-with-instance-store-1",
+                  "region_id": "${data.vra_region.this.id}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+        argumentDocs:
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            default_item: '- (Required) Indicates if this storage profile is a default profile.'
+            description: '- (Optional) A human-friendly description.'
+            device_type: '- (Optional) Indicates the type of storage device.'
+            external_region_id: '- The id of the region as seen in the cloud provider for which this profile is defined.'
+            iops: '- (Optional) Indicates maximum I/O operations per second in range(1-20,000).'
+            links: '- HATEOAS of the entity'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            organization_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            region_id: '- (Required) A link to the region that is associated with the storage profile.'
+            supports_encryption: '- (Optional) Indicates whether this storage profile supports encryption or not.'
+            tags: |-
+                - (Optional) A set of tag keys and optional values that were set on this Network Profile.
+                example: [ { "key" : "ownedBy", "value": "Rainpole" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+            volume_type: '- (Optional) Indicates the type of volume associated with type of storage.'
+        importStatements: []
+    vra_storage_profile_azure:
+        subCategory: ""
+        description: Provides a data lookup for vra_storage_profile_azure.
+        name: vra_storage_profile_azure
+        title: vra_storage_profile_azure
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "data_disk_caching": "None",
+                  "default_item": false,
+                  "description": "Azure Storage Profile with managed disks.",
+                  "disk_type": "Standard_LRS",
+                  "name": "azure-with-managed-disks-1",
+                  "os_disk_caching": "None",
+                  "region_id": "${data.vra_region.this.id}",
+                  "supports_encryption": false,
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+            - name: this
+              manifest: |-
+                {
+                  "data_disk_caching": "None",
+                  "default_item": false,
+                  "description": "Azure Storage Profile with unmanaged disks.",
+                  "name": "azure-with-unmanaged-disks",
+                  "os_disk_caching": "None",
+                  "region_id": "${data.vra_region.this.id}",
+                  "supports_encryption": false,
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+        argumentDocs:
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            data_disk_caching: '- (Optional) Indicates the caching mechanism for additional disk.'
+            default_item: '- (Required) Indicates if this storage profile is a default profile.'
+            description: '- (Optional) A human-friendly description.'
+            disk_type: '- (Optional) Indicates the performance tier for the storage type. Premium disks are SSD backed and Standard disks are HDD backed.'
+            external_region_id: '- The id of the region as seen in the cloud provider for which this profile is defined.'
+            links: '- HATEOAS of the entity'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            organization_id: '- The id of the organization this entity belongs to.'
+            os_disk_caching: '- (Optional) Indicates the caching mechanism for OS disk. Default policy for OS disks is Read/Write.'
+            owner: '- Email of the user that owns the entity.'
+            region_id: '- (Required) A link to the region that is associated with the storage profile.'
+            storage_account_id: '- (Optional) Id of a storage account where in the disk is placed.'
+            supports_encryption: '- (Optional) Indicates whether this storage policy should support encryption or not.'
+            tags: |-
+                - A set of tag keys and optional values that were set on this Network Profile.
+                example: [ { "key" : "ownedBy", "value": "Rainpole" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_storage_profile_vsphere:
+        subCategory: ""
+        description: Provides a data lookup for vra_storage_profile_vsphere.
+        name: vra_storage_profile_vsphere
+        title: vra_storage_profile_vsphere
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "datastore_id": "${data.vra_fabric_datastore_vsphere.this.id}",
+                  "default_item": false,
+                  "description": "vSphere Storage Profile with FCD disk.",
+                  "disk_type": "firstClass",
+                  "name": "vra_storage_profile_vsphere resource - FCD",
+                  "provisioning_type": "thin",
+                  "region_id": "${data.vra_region.this.id}",
+                  "storage_policy_id": "${data.vra_fabric_storage_policy_vsphere.this.id}",
+                  "tags": [
+                    {
+                      "key": "foo",
+                      "value": "bar"
+                    }
+                  ]
+                }
+              references:
+                datastore_id: data.vra_fabric_datastore_vsphere.this.id
+                region_id: data.vra_region.this.id
+                storage_policy_id: data.vra_fabric_storage_policy_vsphere.this.id
+        argumentDocs:
+            cloud_account_id: '- Id of the cloud account this storage profile belongs to.'
+            created_at: '- Date when the entity was created. The date is in ISO 6801 and UTC.'
+            datastore_id: '- (Optional) Id of the vSphere Datastore for placing disk and VM.'
+            default_item: '- (Required) Indicates if this storage profile is a default profile.'
+            description: '- (Optional) A human-friendly description.'
+            disk_mode: '- (Optional) Type of mode for the disk.'
+            disk_type: '- (Optional) Indicates the performance tier for the storage type. Premium disks are SSD backed and Standard disks are HDD backed.'
+            external_region_id: '- The id of the region as seen in the cloud provider for which this profile is defined.'
+            limit_iops: '- (Optional) The upper bound for the I/O operations per second allocated for each virtual disk.'
+            links: '- HATEOAS of the entity'
+            name: '- (Required) A human-friendly name used as an identifier in APIs that support this option.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            provisioning_type: '- (Optional) Type of provisioning policy for the disk.'
+            region_id: '- (Required) The Id of the region that is associated with the storage profile.'
+            shares: '- (Optional) A specific number of shares assigned to each virtual machine.'
+            shares_level: '- (Optional) Indicates whether this storage profile supports encryption or not.'
+            storage_policy_id: '- (Optional) Id of the vSphere Storage Policy to be applied.'
+            supports_encryption: '- (Optional) Indicates whether this storage policy should support encryption or not.'
+            tags: |-
+                - A set of tag keys and optional values that were set on this Network Profile.
+                example: [ { "key" : "ownedBy", "value": "Rainpole" } ]
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+        importStatements: []
+    vra_zone:
+        subCategory: ""
+        description: Provides a VMware vRA vra_zone resource.
+        name: vra_zone
+        title: vra_zone
+        examples:
+            - name: this
+              manifest: |-
+                {
+                  "description": "my terraform test cloud zone",
+                  "name": "tf-vra-zone",
+                  "region_id": "${data.vra_region.this.id}",
+                  "tags": [
+                    {
+                      "key": "my-tf-key",
+                      "value": "my-tf-value"
+                    },
+                    {
+                      "key": "tf-foo",
+                      "value": "tf-bar"
+                    }
+                  ]
+                }
+              references:
+                region_id: data.vra_region.this.id
+        argumentDocs:
+            cloud_account_id: '- The ID of the cloud account this zone belongs to.'
+            compute_ids: '- (Optional) The ids of the compute resources that will be explicitly assigned to this zone.'
+            created_at: '- Date when the entity was created. The date is in ISO 8601 and UTC.'
+            custom_properties: '- (Optional) A list of key value pair of properties that will be used.'
+            description: '- (Optional) A human-friendly description.'
+            external_region_id: '- The id of the region for which this zone is defined.'
+            folder: '- (Optional) The folder relative path to the datacenter where resources are deployed to (only applicable for vSphere cloud zones).'
+            key: '- Tag’s key.'
+            links: '- HATEOAS of entity.'
+            name: '- (Required) A human-friendly name used as an identifier for the zone resource instance.'
+            org_id: '- The id of the organization this entity belongs to.'
+            owner: '- Email of the user that owns the entity.'
+            placement_policy: '- (Optional) The placement policy for the zone. One of DEFAULT, SPREAD or BINPACK. Default is DEFAULT.'
+            region_id: '- (Required) The id of the region for which this zone is created.'
+            tags: '- (Optional) A set of tag keys and optional values that were set on this resource:'
+            tags_to_match: '- (Optional) A set of tag keys and optional values for compute resource filtering:'
+            updated_at: '- Date when the entity was last updated. The date is ISO 8601 and UTC.'
+            value: '- Tag’s value.'
         importStatements: []

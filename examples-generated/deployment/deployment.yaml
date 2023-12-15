@@ -1,0 +1,27 @@
+apiVersion: deployment.vra.provider/v1alpha1
+kind: Deployment
+metadata:
+  annotations:
+    meta.upbound.io/example-id: deployment/v1alpha1/deployment
+  labels:
+    testing.upbound.io/example-name: this
+  name: this
+spec:
+  forProvider:
+    catalogItemId: ${var.catalog_item_id}
+    catalogItemVersion: ${var.catalog_item_version}
+    description: Deployment description
+    inputs:
+      arrayProp: ${jsonencode(["foo", "bar", "where", "waldo"])}
+      count: 1
+      flag: false
+      flavor: small
+      image: centos
+      number: 10
+      objectProp: '${jsonencode({ "key1": "value1", "key2": [1, 2, 3, 4] })}'
+    name: ${var.deployment_name}
+    projectId: ${var.project_id}
+    timeouts:
+    - create: 30m
+      delete: 30m
+      update: 30m
